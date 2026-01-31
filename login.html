@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>DiverDex – Login</title>
+
+  <script src="js/md5.js"></script>
+  <script src="js/code.js"></script>
+
+  <link href="css/styles.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css?family=Ubuntu" rel="stylesheet">
+</head>
+<body class="login">
+
+  <div class="login-container">
+    <img src="images/logo.PNG" alt="DiverDex Logo" class="logo small">
+
+    <div id="loginDiv">
+      <span id="inner-title">Log In</span>
+
+      <input type="text" id="loginName" placeholder="Username">
+      <input type="password" id="loginPassword" placeholder="Password">
+
+      <button id="loginButton" onclick="doLogin()">
+        Log In
+      </button>
+
+      <span id="loginResult"></span>
+    </div>
+  </div>
+
+</body>
+</html>
