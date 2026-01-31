@@ -68,7 +68,8 @@ body.login .logo {
     position: absolute;
     top: 20px;
     left: 20px;
-    width: 180px;
+    width: 280px;
+    max-width: 40vw;
 }
 
 
@@ -97,6 +98,7 @@ body.login .logo {
     font-size: 26px;
     margin-bottom: 22px;
     font-weight: bold;
+    color: #0b4f6c;
 }
 
 /* login inputs */
