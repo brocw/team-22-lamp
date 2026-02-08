@@ -10,23 +10,26 @@
   <link href="css/styles.css" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css?family=Ubuntu" rel="stylesheet">
 </head>
+
 <body class="login">
 
   <div class="login-container">
     <img src="images/logo.PNG" alt="DiverDex Logo" class="logo small">
 
     <div id="loginDiv">
-      <span id="inner-title">Log In</span>
+      <span id="inner-title">Create Account</span>
 
-      <input type="text" id="loginName" placeholder="Username">
-      <input type="password" id="loginPassword" placeholder="Password">
+      <input type="text" id="newAccountFirstName" placeholder="First Name">
+      <input type="text" id="newAccountLastName" placeholder="Last Name">
+      <input type="text" id="newAccountUsername" placeholder="Username">
+      <input type="password" id="newAccountPassword" placeholder="Password">
 
-      <button id="loginButton" onclick="doLogin()">
-        Log In
+      <button id="createAccountButton" onclick="createAccount()">
+        create account
       </button>
 
-      <button id="registerButton" onclick="window.location.href = 'register.html';">
-        Register
+      <button id="backButton" onclick="window.location.href = 'login.html';">
+        go back
       </button>
 
       <span id="loginResult"></span>

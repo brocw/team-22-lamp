@@ -1,6 +1,6 @@
 <html>
 <head>
-	<title>Team 22 Small Project</title>
+	<title>Contact Manager</title>
 	<script type="text/javascript" src="js/code.js"></script>
     <link href="css/styles.css" rel="stylesheet">	
     <link href="https://fonts.googleapis.com/css?family=Ubuntu" rel="stylesheet">
@@ -15,7 +15,7 @@
 </head>
 <body>
 
-<h1 id="title">Team 22 Small Project</h1>
+<h1 id="title">Contact Manager</h1>
 
 <div id="loggedInDiv">
 	<span id="userName"></span><br />
@@ -25,15 +25,27 @@
 <div id="accessUIDiv">
 	<br />
 
-	<input type="text" id="searchText" placeholder="Color To Search For"/>
-	<button type="button" id="searchColorButton" class="buttons" onclick="searchColor();"> Search Color </button><br />
-	<span id="colorSearchResult"></span>
-	<p id="colorList">
+	<input type="text" id="searchText" placeholder="-- use either: first name, last name, email, or phone number to search --"/>
+	<button type="button" id="searchContactButton" onclick="searchContact();"><img src="images/managerButtons/oceanSearchButton.png" alt="Search Contact" /></button>
+
+	<button type="button" id="addContactButton" onclick="toggleAddContactDiv();"><img src="images/managerButtons/oceanAddButton.png" alt="Add Contact" /></button>
+	<div id="addContactDiv">
+		<div id="addContactTitle">NEW CONTACT</div>
+		<div><label for="addContactFirstName">First Name:</label><input id="addContactFirstName" type="text"></div>
+		<div><label for="addContactLastName">Last Name:</label><input id="addContactLastName" type="text"></div>
+		<div><label for="addContactPhone">Phone #:</label><input id="addContactPhone" type="text"></div>
+		<div><label for="addContactEmail">Email:</label><input id="addContactEmail" type="text"></div>
+		<span id="contactAddResult"></span><br />
+		<button type="button" id="commitContactButton" class="buttons" onclick="addContact();"> Add Contact </button>
+	</div>
+
+	<span id="contactSearchResult"></span>
+	<p id="contactList">
 	</p><br /><br />
 
-	<input type="text" id="colorText" placeholder="Color To Add">
+	<!--<input type="text" id="colorText" placeholder="Color To Add">
 	<button type="button" id="addColorButton" class="buttons" onclick="addColor();"> Add Color </button><br />
-	<span id="colorAddResult"></span>
+	<span id="colorAddResult"></span>-->
 </div>
 
 </body>

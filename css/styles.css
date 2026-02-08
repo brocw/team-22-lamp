@@ -4,6 +4,7 @@ body {
     height: 100%;
     margin: 0;
     font-family: 'Ubuntu', sans-serif;
+    position: relative;
 
     /* background */
     background-image: url("../images/background.png");
@@ -101,6 +102,153 @@ body.login .logo {
     color: #0b4f6c;
 }
 
+/* color page title */
+#title {
+    text-align: center;
+    margin-top: 24px;
+    color: #073047;
+}
+
+/* color page title */
+#loggedInDiv {
+    position: absolute;
+    top: 24px;
+    right: 24px;
+    color: #073047;
+}
+#searchText {
+    vertical-align: middle;
+    width: 920px;
+    padding: 21px;
+    font-size: 27px;
+    border-radius: 12px;
+    border: 1px solid #ccc;
+    margin: 20px;
+}
+/* search button behavior*/
+#searchContactButton {
+    vertical-align: middle;
+    border: none;
+    background: none;
+    cursor: pointer;
+    margin-left: 10px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 80px;
+    height: 70px;
+    padding: 0;
+    overflow: visible;
+}
+
+#searchContactButton img {
+    width: 180px;
+    height: 130px;
+    display: block;
+    pointer-events: none;
+}
+
+/* add button behavior*/
+#addContactButton {
+    vertical-align: middle;
+    border: none;
+    background: none;
+    cursor: pointer;
+    margin-left: 10px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 80px;
+    height: 70px;
+    padding: 0;
+    overflow: visible;
+}
+
+#addContactButton img {
+    width: 180px;
+    height: 130px;
+    display: block;
+    pointer-events: none;
+}
+
+.deleteContactButton {
+    vertical-align: middle;
+    border: none;
+    background: none;
+    cursor: pointer;
+    margin-left: 10px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 60px;
+    height: 50px;
+    padding: 0;
+    overflow: visible;
+}
+
+.deleteContactButton img {
+    width: 80px;
+    height: 60px;
+    display: block;
+    pointer-events: none;
+}
+
+.editContactButton {
+    vertical-align: middle;
+    border: none;
+    background: none;
+    cursor: pointer;
+    margin-left: 10px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 60px;
+    height: 50px;
+    padding: 0;
+    overflow: visible;
+}
+
+.editContactButton img {
+    width: 80px;
+    height: 60px;
+    display: block;
+    pointer-events: none;
+}
+
+#addContactDiv {
+    display : none;
+    flex-direction: column;
+    align-items: center;
+    width: 500px;
+    margin: 0 auto;
+    color: #073047;
+    background-color: rgba(0, 0, 0, 0.5);  /* Semi-transparent dark */
+
+}
+
+#addContactTitle {
+    font-size: large;
+    margin-bottom: 40px;
+}
+
+#addContactFirstName, #addContactLastName, #addContactPhone, #addContactEmail {
+    display : flex;
+    align-items: center;
+    vertical-align: middle;
+    width: 480px;
+    height: 50px;
+    padding: 21px;
+    font-size: 27px;
+    border-radius: 12px;
+    border: 1px solid #ccc;
+    margin: 20px;
+}
+
+#accessUIDiv {
+    text-align: center;
+    margin-top: 90px;
+    color: #073047;
+}
 /* login inputs */
 #loginDiv input {
     width: 320px;
@@ -125,4 +273,69 @@ body.login .logo {
 
 #loginButton:hover {
     background-color: #093b52;
+}
+
+/* register button */
+#registerButton {
+    margin-top: 20px;
+    padding: 14px 36px;
+    font-size: 18px;
+    border-radius: 8px;
+    border: none;
+    background-color: #0b4f6c;
+    color: white;
+    cursor: pointer;
+}
+
+#registerButton:hover {
+    background-color: #093b52;
+}
+
+/* create account button */
+#createAccountButton {
+    margin-top: 20px;
+    padding: 14px 36px;
+    font-size: 18px;
+    border-radius: 8px;
+    border: none;
+    background-color: #0b4f6c;
+    color: white;
+    cursor: pointer;
+}
+
+#createAccountButton:hover {
+    background-color: #093b52;
+}
+
+/* go back button */
+#backButton {
+    margin-top: 20px;
+    padding: 14px 36px;
+    font-size: 18px;
+    border-radius: 8px;
+    border: none;
+    background-color: #0b4f6c;
+    color: white;
+    cursor: pointer;
+}
+
+#backButton:hover {
+    background-color: #093b52;
+}
+
+/* image button click effect */
+#searchContactButton:active {
+    filter: brightness(0.7);
+}
+
+#addContactButton:active {
+    filter: brightness(0.7);
+}
+
+.deleteContactButton:active {
+    filter: brightness(0.7);
+}
+
+.editContactButton:active {
+    filter: brightness(0.7);
 }
