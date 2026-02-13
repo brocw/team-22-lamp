@@ -6,7 +6,6 @@ body {
     font-family: 'Ubuntu', sans-serif;
     position: relative;
 
-    /* background */
     background-image: url("../images/background.png");
     background-size: cover;
     background-position: center;
@@ -31,7 +30,6 @@ body.landing {
     width: 300px;
     max-width: 80vw;
 }
-
 
 body.landing .logo {
     width: 450px;
@@ -73,7 +71,6 @@ body.login .logo {
     max-width: 40vw;
 }
 
-
 .login-container {
     text-align: center;
 }
@@ -88,7 +85,6 @@ body.login .logo {
     padding: 50px 60px;
     border-radius: 18px;
     min-width: 420px;
-
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -105,17 +101,20 @@ body.login .logo {
 /* color page title */
 #title {
     text-align: center;
-    margin-top: 24px;
+    margin-top: 80px;
+    font-size: 48px;
+    font-weight: bold;
     color: #073047;
 }
 
-/* color page title */
+
 #loggedInDiv {
     position: absolute;
     top: 24px;
     right: 24px;
     color: #073047;
 }
+
 #searchText {
     vertical-align: middle;
     width: 920px;
@@ -125,7 +124,8 @@ body.login .logo {
     border: 1px solid #ccc;
     margin: 20px;
 }
-/* search button behavior*/
+
+/* search button behavior */
 #searchContactButton {
     vertical-align: middle;
     border: none;
@@ -148,7 +148,7 @@ body.login .logo {
     pointer-events: none;
 }
 
-/* add button behavior*/
+/* add button behavior */
 #addContactButton {
     vertical-align: middle;
     border: none;
@@ -171,28 +171,7 @@ body.login .logo {
     pointer-events: none;
 }
 
-.deleteContactButton {
-    vertical-align: middle;
-    border: none;
-    background: none;
-    cursor: pointer;
-    margin-left: 10px;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 60px;
-    height: 50px;
-    padding: 0;
-    overflow: visible;
-}
-
-.deleteContactButton img {
-    width: 80px;
-    height: 60px;
-    display: block;
-    pointer-events: none;
-}
-
+.deleteContactButton,
 .editContactButton {
     vertical-align: middle;
     border: none;
@@ -208,6 +187,7 @@ body.login .logo {
     overflow: visible;
 }
 
+.deleteContactButton img,
 .editContactButton img {
     width: 80px;
     height: 60px;
@@ -217,24 +197,45 @@ body.login .logo {
 
 #addContactDiv {
     display : none;
+    background: rgba(255, 255, 255, 0.25);
+    padding: 50px 60px;
+    border-radius: 18px;
+    width: 500px;
+    margin: 40px auto;
     flex-direction: column;
     align-items: center;
-    width: 500px;
-    margin: 0 auto;
     color: #073047;
-    background-color: rgba(0, 0, 0, 0.5);  /* Semi-transparent dark */
-
 }
+
 
 #addContactTitle {
-    font-size: large;
-    margin-bottom: 40px;
+    font-size: 26px;
+    margin-bottom: 22px;
+    font-weight: bold;
+    color: #0b4f6c;
 }
 
-#addContactFirstName, #addContactLastName, #addContactPhone, #addContactEmail {
-    display : flex;
+#logoutButton {
+    border: none;
+    background: none;
+    cursor: pointer;
+    display: inline-flex;
     align-items: center;
-    vertical-align: middle;
+    justify-content: center;
+    padding: 0;
+    font-size: 18px;
+    color: #073047;
+}
+
+#logoutButton:hover {
+    filter: brightness(0.8);
+}
+
+
+#addContactFirstName,
+#addContactLastName,
+#addContactPhone,
+#addContactEmail {
     width: 480px;
     height: 50px;
     padding: 21px;
@@ -246,9 +247,10 @@ body.login .logo {
 
 #accessUIDiv {
     text-align: center;
-    margin-top: 90px;
+    margin-top: 20px;
     color: #073047;
 }
+
 /* login inputs */
 #loginDiv input {
     width: 320px;
@@ -259,8 +261,12 @@ body.login .logo {
     border: none;
 }
 
-/* login button */
-#loginButton {
+/* buttons */
+#loginButton,
+#registerButton,
+#createAccountButton,
+#backButton,
+#commitContactButton {
     margin-top: 20px;
     padding: 14px 36px;
     font-size: 18px;
@@ -271,71 +277,46 @@ body.login .logo {
     cursor: pointer;
 }
 
-#loginButton:hover {
+#loginButton:hover,
+#registerButton:hover,
+#createAccountButton:hover,
+#backButton:hover,
+#commitContactButton:hover {
     background-color: #093b52;
 }
 
-/* register button */
-#registerButton {
-    margin-top: 20px;
-    padding: 14px 36px;
-    font-size: 18px;
-    border-radius: 8px;
-    border: none;
-    background-color: #0b4f6c;
-    color: white;
-    cursor: pointer;
-}
-
-#registerButton:hover {
-    background-color: #093b52;
-}
-
-/* create account button */
-#createAccountButton {
-    margin-top: 20px;
-    padding: 14px 36px;
-    font-size: 18px;
-    border-radius: 8px;
-    border: none;
-    background-color: #0b4f6c;
-    color: white;
-    cursor: pointer;
-}
-
-#createAccountButton:hover {
-    background-color: #093b52;
-}
-
-/* go back button */
-#backButton {
-    margin-top: 20px;
-    padding: 14px 36px;
-    font-size: 18px;
-    border-radius: 8px;
-    border: none;
-    background-color: #0b4f6c;
-    color: white;
-    cursor: pointer;
-}
-
-#backButton:hover {
-    background-color: #093b52;
-}
-
-/* image button click effect */
-#searchContactButton:active {
-    filter: brightness(0.7);
-}
-
-#addContactButton:active {
-    filter: brightness(0.7);
-}
-
-.deleteContactButton:active {
-    filter: brightness(0.7);
-}
-
+/* click effect */
+#searchContactButton:active,
+#addContactButton:active,
+.deleteContactButton:active,
 .editContactButton:active {
     filter: brightness(0.7);
 }
+
+/* Stable placeholder fade */
+#searchText::placeholder {
+    color: #073047;
+    opacity: 0;
+    transition: opacity 0.5s ease;
+}
+
+#searchText:hover::placeholder {
+    opacity: 1;
+}
+
+#logoutButton {
+    margin-top: 10px;
+    padding: 14px 36px;
+    font-size: 18px;
+    border-radius: 8px;
+    border: none;
+    background-color: #125872;
+    color: white;
+    cursor: pointer;
+}
+
+#logoutButton:hover {
+    background-color: #19627c;
+}
+
+
