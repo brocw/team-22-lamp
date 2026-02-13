@@ -177,20 +177,20 @@ body.login .logo {
     border: none;
     background: none;
     cursor: pointer;
-    margin-left: 10px;
     display: inline-flex;
     align-items: center;
     justify-content: center;
     width: 60px;
-    height: 50px;
+    height: 55px;
     padding: 0;
     overflow: visible;
+    object-fit: contain;
 }
 
 .deleteContactButton img,
 .editContactButton img {
-    width: 80px;
-    height: 60px;
+    width: 160px;
+    height: 110px;
     display: block;
     pointer-events: none;
 }
@@ -319,4 +319,51 @@ body.login .logo {
     background-color: #19627c;
 }
 
+/* Contact Table Layout */
+.contact-table {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    width: 100%;
+    margin-top: 20px;
+}
 
+.contact-header {
+    display: flex;
+    background-color: transparent;
+    font-weight: bold;
+    padding: 10px 0;
+    margin-bottom: 10px;
+}
+
+.contact-row {
+    display: flex;
+    border-radius: 8px;
+    border: 2px solid #000;
+    margin-bottom: 10px;
+    background-color: #fff;
+    min-height: 60px;
+    align-items: center;
+}
+
+.contact-cell {
+    flex: 1;
+    padding: 15px;
+    border-right: 2px solid #000;
+    min-width: 200px;
+    word-wrap: break-word;
+}
+
+.contact-cell:last-of-type {
+    border-right: 2px solid #000;
+}
+
+.contact-actions {
+    width: 120px;
+    flex-shrink: 0;
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+}

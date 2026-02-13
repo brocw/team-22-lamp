@@ -1,5 +1,4 @@
-// LOCAL_ONLY_TOGGLE: revert to production when told
-const urlBase = 'http://localhost:8000/LAMPAPI';
+const urlBase = 'http://cop-4331-22.com/LAMPAPI';
 const extension = 'php';
 
 let userId = 0;
@@ -65,8 +64,7 @@ function createAccount()
 	let lastName = document.getElementById("newAccountLastName").value;
 	let login = document.getElementById("newAccountUsername").value;
 	let password = document.getElementById("newAccountPassword").value;
-	var hash = md5( password );
-	var tmp = {firstName: firstName, lastName: lastName, login: login, password: hash};
+	var tmp = {firstName: firstName, lastName: lastName, login: login, password: password};
 	let jsonPayload = JSON.stringify( tmp );
 	
 	let url = urlBase + '/Signup.' + extension;
@@ -112,10 +110,6 @@ function readCookie()
 {
 	userId = -1;
 	let data = document.cookie;
-	// LOCAL_PREVIEW_BYPASS_START (revert for production)
-	let host = window.location.hostname;
-	let isLocal = window.location.protocol === "file:" || host === "localhost" || host === "127.0.0.1" || host === "0.0.0.0" || host === "::1";
-	// LOCAL_PREVIEW_BYPASS_END (revert for production)
 	let splits = data.split(",");
 	for(var i = 0; i < splits.length; i++) 
 	{
@@ -137,18 +131,7 @@ function readCookie()
 	
 	if( userId < 0 )
 	{
-		// LOCAL_PREVIEW_BYPASS_START (revert for production)
-		if( isLocal )
-		{
-			userId = 1;
-			firstName = "Local";
-			lastName = "Preview";
-		}
-		else
-		{
-			window.location.href = "index.html";
-		}
-		// LOCAL_PREVIEW_BYPASS_END (revert for production)
+		window.location.href = "index.html";
 	}
 	else
 	{
@@ -200,7 +183,7 @@ function addContact()
 
 function deleteContact(contactId)
 {
-	let tmp = {userId:userId, contactId:contactId};
+	let tmp = {id: contactId, userId:userId};
 	let jsonPayload = JSON.stringify( tmp );
 
 	let url = urlBase + '/DeleteContact.' + extension;
@@ -223,6 +206,33 @@ function deleteContact(contactId)
 	catch(err)
 	{
 		document.getElementById("contactDeleteResult").innerHTML = err.message;
+	}
+}
+
+function editContact(contactId, firstName, lastName, phoneNumber, email){
+
+	let tmp = { firstName:firstName, lastName:lastName, email:email, phone:phoneNumber, id: contactId, userId:userId };
+	let jsonPayload = JSON.stringify( tmp );
+
+	let url = urlBase + '/UpdateContact.' + extension;
+	
+	let xhr = new XMLHttpRequest();
+	xhr.open("POST", url, true);
+	xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
+	try
+	{
+		xhr.onreadystatechange = function() 
+		{
+			if (this.readyState == 4 && this.status == 200) 
+			{
+				document.getElementById("contactEditResult").innerHTML = "Contact has been edited";
+			}
+		};
+		xhr.send(jsonPayload);
+	}
+	catch(err)
+	{
+		document.getElementById("contactEditResult").innerHTML = err.message;
 	}
 }
 
@@ -259,21 +269,23 @@ function searchContact()
 				document.getElementById("contactSearchResult").innerHTML = "Contact(s) has been retrieved";
 				let jsonObject = JSON.parse( xhr.responseText );
 				
+				contactList = '<div class="contact-table"><div class="contact-header"><div class="contact-cell">first name</div><div class="contact-cell">last name</div><div class="contact-cell">phone number</div><div class="contact-cell">email</div><div class="contact-actions">contact actions</div></div>';
+				
 				for( let i=0; i<jsonObject.results.length; i++ )
 				{
 					let contact = jsonObject.results[i];
-					contactList += contact.firstName + " " + contact.lastName +
-						" | " + contact.phone + " | " + contact.email +
-						" <button type=\"button\" class=\"deleteContactButton\" data-contact-id=\"" + contact.id + "\" onclick=\"deleteContact(" + contact.id + ");\">" +
-						"<img src=\"images/managerButtons/oceanXButton.png\" alt=\"Delete Contact\" /></button>" +
-						" <button type=\"button\" class=\"editContactButton\" data-contact-id=\"" + contact.id + "\" onclick=\"editContact(" + contact.id + ");\">" + /*!!!!IMPORTANT!!!! needs to be replaced with a function that will use add and delete to effectivly edit a contact*/
-						"<img src=\"images/managerButtons/oceanEditButton.png\" alt=\"Edit Contact\" /></button>";
-					if( i < jsonObject.results.length - 1 )
-					{
-						contactList += "<br />\r\n";
-					}
+					contactList += '<div class="contact-row">' +
+						'<div class="contact-cell">' + contact.firstName + '</div>' +
+						'<div class="contact-cell">' + contact.lastName + '</div>' +
+						'<div class="contact-cell">' + contact.phone + '</div>' +
+						'<div class="contact-cell">' + contact.email + '</div>' +
+						'<div class="contact-actions">' +
+						'<button type="button" class="deleteContactButton" onclick="deleteContact(' + contact.id + ');"><img src="images/managerButtons/oceanXButton.png" alt="Delete" /></button>' +
+						'<button type="button" class="editContactButton" onclick="editContact(' + contact.id + ', \'' + contact.firstName + '\', \'' + contact.lastName + '\', \'' + contact.phone + '\', \'' + contact.email + '\');"><img src="images/managerButtons/oceanEditButton.png" alt="Edit" /></button>' +
+						'</div></div>';
 				}
 				
+				contactList += '</div>';
 				document.getElementById("contactList").innerHTML = contactList;
 			}
 		};
