@@ -4,6 +4,8 @@ const extension = 'php';
 let userId = 0;
 let firstName = "";
 let lastName = "";
+let editingId = null;
+
 
 function doLogin()
 {
@@ -150,36 +152,77 @@ function doLogout()
 
 function addContact()
 {
-	let firstName = document.getElementById("addContactFirstName").value;
-	let lastName = document.getElementById("addContactLastName").value;
-	let phoneNumber = document.getElementById("addContactPhone").value;
-	let email = document.getElementById("addContactEmail").value;
+    let firstName = document.getElementById("addContactFirstName").value;
+    let lastName = document.getElementById("addContactLastName").value;
+    let phoneNumber = document.getElementById("addContactPhone").value;
+    let email = document.getElementById("addContactEmail").value;
 
-	let tmp = {firstName:firstName, lastName:lastName, email:email, phoneNumber:phoneNumber,userId:userId};
-	let jsonPayload = JSON.stringify( tmp );
+    let tmp;
+    let url;
 
-	let url = urlBase + '/AddContact.' + extension;
-	
-	let xhr = new XMLHttpRequest();
-	xhr.open("POST", url, true);
-	xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
-	try
-	{
-		xhr.onreadystatechange = function() 
-		{
-			if (this.readyState == 4 && this.status == 200) 
-			{
-				document.getElementById("contactAddResult").innerHTML = "Contact has been added";
-			}
-		};
-		xhr.send(jsonPayload);
-	}
-	catch(err)
-	{
-		document.getElementById("contactAddResult").innerHTML = err.message;
-	}
-	
+    if (editingId !== null)
+    {
+        // EDIT MODE
+        tmp = {
+            firstName:firstName,
+            lastName:lastName,
+            email:email,
+            phone:phoneNumber,
+            id: editingId,
+            userId:userId
+        };
+
+        url = urlBase + '/UpdateContact.' + extension;
+    }
+    else
+    {
+        // ADD MODE
+        tmp = {
+            firstName:firstName,
+            lastName:lastName,
+            email:email,
+            phoneNumber:phoneNumber,
+            userId:userId
+        };
+
+        url = urlBase + '/AddContact.' + extension;
+    }
+
+    let jsonPayload = JSON.stringify(tmp);
+
+    let xhr = new XMLHttpRequest();
+    xhr.open("POST", url, true);
+    xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
+
+    xhr.onreadystatechange = function()
+    {
+        if (this.readyState == 4 && this.status == 200)
+        {
+            if (editingId !== null)
+            {
+                document.getElementById("contactEditResult").innerHTML = "Contact has been edited";
+            }
+            else
+            {
+                document.getElementById("contactAddResult").innerHTML = "Contact has been added";
+            }
+
+            // Reset mode
+            editingId = null;
+
+            // Reset UI
+            document.getElementById("addContactTitle").innerHTML = "NEW CONTACT";
+            document.getElementById("commitContactButton").innerHTML = "Add Contact";
+            document.getElementById("addContactDiv").style.display = "none";
+            document.getElementById("contactList").style.display = "block";
+
+            searchContact();
+        }
+    };
+
+    xhr.send(jsonPayload);
 }
+
 
 function deleteContact(contactId)
 {
@@ -209,44 +252,51 @@ function deleteContact(contactId)
 	}
 }
 
-function editContact(contactId, firstName, lastName, phoneNumber, email){
+function editContact(contactId, firstName, lastName, phoneNumber, email)
+{
+    editingId = contactId;
 
-	let tmp = { firstName:firstName, lastName:lastName, email:email, phone:phoneNumber, id: contactId, userId:userId };
-	let jsonPayload = JSON.stringify( tmp );
+    // Hide table
+    document.getElementById("contactList").style.display = "none";
 
-	let url = urlBase + '/UpdateContact.' + extension;
-	
-	let xhr = new XMLHttpRequest();
-	xhr.open("POST", url, true);
-	xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
-	try
-	{
-		xhr.onreadystatechange = function() 
-		{
-			if (this.readyState == 4 && this.status == 200) 
-			{
-				document.getElementById("contactEditResult").innerHTML = "Contact has been edited";
-			}
-		};
-		xhr.send(jsonPayload);
-	}
-	catch(err)
-	{
-		document.getElementById("contactEditResult").innerHTML = err.message;
-	}
+    // Show addContactDiv
+    document.getElementById("addContactDiv").style.display = "flex";
+
+    // Change title + button text
+    document.getElementById("addContactTitle").innerHTML = "EDIT CONTACT";
+    document.getElementById("commitContactButton").innerHTML = "Edit Contact";
+
+    // Pre-fill fields
+    document.getElementById("addContactFirstName").value = firstName;
+    document.getElementById("addContactLastName").value = lastName;
+    document.getElementById("addContactPhone").value = phoneNumber;
+    document.getElementById("addContactEmail").value = email;
 }
 
-function toggleAddContactDiv(){
-	let addContactDiv = document.getElementById("addContactDiv");
-	if (addContactDiv.style.display === "none" || addContactDiv.style.display === "") {
-		addContactDiv.style.display = "flex";
-	} else {
-		addContactDiv.style.display = "none";
-	}
+
+function toggleAddContactDiv()
+{
+    editingId = null;
+
+    document.getElementById("contactList").style.display = "none";
+    document.getElementById("addContactDiv").style.display = "flex";
+
+    document.getElementById("addContactTitle").innerHTML = "NEW CONTACT";
+    document.getElementById("commitContactButton").innerHTML = "Add Contact";
+
+    // Clear inputs
+    document.getElementById("addContactFirstName").value = "";
+    document.getElementById("addContactLastName").value = "";
+    document.getElementById("addContactPhone").value = "";
+    document.getElementById("addContactEmail").value = "";
 }
+
+
 
 function searchContact()
-{
+{	
+	document.getElementById("addContactDiv").style.display = "none";
+
 	let srch = document.getElementById("searchText").value;
 	document.getElementById("contactSearchResult").innerHTML = "";
 	
