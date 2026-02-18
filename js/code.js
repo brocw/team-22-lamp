@@ -6,6 +6,16 @@ let firstName = "";
 let lastName = "";
 let editingId = null;
 
+function showStatus(message)
+{
+	const toast = document.getElementById("statusToast");
+	toast.textContent = message;
+	toast.classList.add("visible");
+	clearTimeout(toast._hideTimer);
+	toast._hideTimer = setTimeout(function() {
+		toast.classList.remove("visible");
+	}, 2500);
+}
 
 function doLogin()
 {
@@ -19,7 +29,6 @@ function doLogin()
 	
 	document.getElementById("loginResult").innerHTML = "";
 
-	// let tmp = {login:login,password:password};
 	var tmp = {login:login,password:hash};
 	let jsonPayload = JSON.stringify( tmp );
 	
@@ -150,12 +159,51 @@ function doLogout()
 	window.location.href = "index.html";
 }
 
+function clearFieldErrors()
+{
+	document.getElementById("phoneError").innerHTML = "";
+	document.getElementById("emailError").innerHTML = "";
+}
+
+function validateContactFields(phone, email)
+{
+	let valid = true;
+
+	const phoneRegex = /^\+?[\d\s\-().]{7,15}$/;
+	const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+	if (!phoneRegex.test(phone))
+	{
+		document.getElementById("phoneError").innerHTML = "&#9888; Please enter a valid phone number";
+		valid = false;
+	}
+
+	if (!emailRegex.test(email))
+	{
+		document.getElementById("emailError").innerHTML = "&#9888; Please enter a valid email";
+		valid = false;
+	}
+
+	return valid;
+}
+
 function addContact()
 {
     let firstName = document.getElementById("addContactFirstName").value;
     let lastName = document.getElementById("addContactLastName").value;
     let phoneNumber = document.getElementById("addContactPhone").value;
     let email = document.getElementById("addContactEmail").value;
+
+    clearFieldErrors();
+
+    // Only validate format on add, not edit
+    if (editingId === null)
+    {
+        if (!validateContactFields(phoneNumber, email))
+        {
+            return;
+        }
+    }
 
     let tmp;
     let url;
@@ -198,13 +246,30 @@ function addContact()
     {
         if (this.readyState == 4 && this.status == 200)
         {
+            let jsonObject = JSON.parse(xhr.responseText);
+
+            // Handle backend duplicate errors
+            if (jsonObject.error && jsonObject.error.length > 0)
+            {
+                if (jsonObject.error === "emailExists")
+                {
+                    document.getElementById("emailError").innerHTML = "&#9888; Contact with that email already exists";
+                }
+                else if (jsonObject.error === "phoneExists")
+                {
+                    document.getElementById("phoneError").innerHTML = "&#9888; Contact with that phone number already exists";
+                }
+                return;
+            }
+
+            let statusMsg;
             if (editingId !== null)
             {
-                document.getElementById("contactEditResult").innerHTML = "Contact has been edited";
+                statusMsg = "Contact has been edited";
             }
             else
             {
-                document.getElementById("contactAddResult").innerHTML = "Contact has been added";
+                statusMsg = "Contact has been added";
             }
 
             // Reset mode
@@ -214,9 +279,8 @@ function addContact()
             document.getElementById("addContactTitle").innerHTML = "NEW CONTACT";
             document.getElementById("commitContactButton").innerHTML = "Add Contact";
             document.getElementById("addContactDiv").style.display = "none";
-            document.getElementById("contactList").style.display = "block";
 
-            searchContact();
+            searchContact(statusMsg);
         }
     };
 
@@ -240,15 +304,14 @@ function deleteContact(contactId)
 		{
 			if (this.readyState == 4 && this.status == 200) 
 			{
-				document.getElementById("contactDeleteResult").innerHTML = "Contact has been deleted";
-				searchContact();
+				searchContact("Contact has been deleted");
 			}
 		};
 		xhr.send(jsonPayload);
 	}
 	catch(err)
 	{
-		document.getElementById("contactDeleteResult").innerHTML = err.message;
+		showStatus(err.message);
 	}
 }
 
@@ -256,7 +319,7 @@ function editContact(contactId, firstName, lastName, phoneNumber, email)
 {
     editingId = contactId;
 
-    // Hide table
+    // Hide contact list
     document.getElementById("contactList").style.display = "none";
 
     // Show addContactDiv
@@ -289,18 +352,91 @@ function toggleAddContactDiv()
     document.getElementById("addContactLastName").value = "";
     document.getElementById("addContactPhone").value = "";
     document.getElementById("addContactEmail").value = "";
+    clearFieldErrors();
 }
 
 
 
-function searchContact()
+let allContacts = [];
+let currentPage = 1;
+let pageSize = 10;
+
+function renderContactTable()
+{
+	const start = (currentPage - 1) * pageSize;
+	const end = start + pageSize;
+	const pageContacts = allContacts.slice(start, end);
+	const totalPages = Math.ceil(allContacts.length / pageSize);
+
+	let html = '<div class="contact-table">';
+
+	// Page size selector
+	html += '<div class="pagination-controls">';
+	html += '<label for="pageSizeSelect">Show: </label>';
+	html += '<select id="pageSizeSelect" onchange="changePageSize(this.value)">';
+	html += '<option value="5"' + (pageSize === 5 ? ' selected' : '') + '>5</option>';
+	html += '<option value="10"' + (pageSize === 10 ? ' selected' : '') + '>10</option>';
+	html += '<option value="25"' + (pageSize === 25 ? ' selected' : '') + '>25</option>';
+	html += '</select>';
+	html += '<span class="pagination-info"> Showing ' + (start + 1) + '&ndash;' + Math.min(end, allContacts.length) + ' of ' + allContacts.length + ' contacts</span>';
+	html += '</div>';
+
+	// Table header
+	html += '<div class="contact-header"><div class="contact-cell">first name</div><div class="contact-cell">last name</div><div class="contact-cell">phone number</div><div class="contact-cell">email</div><div class="contact-actions">contact actions</div></div>';
+
+	// Rows
+	for (let i = 0; i < pageContacts.length; i++)
+	{
+		let contact = pageContacts[i];
+		html += '<div class="contact-row">' +
+			'<div class="contact-cell">' + contact.firstName + '</div>' +
+			'<div class="contact-cell">' + contact.lastName + '</div>' +
+			'<div class="contact-cell">' + contact.phone + '</div>' +
+			'<div class="contact-cell">' + contact.email + '</div>' +
+			'<div class="contact-actions">' +
+			'<button type="button" class="deleteContactButton" onclick="deleteContact(' + contact.id + ');"><img src="images/managerButtons/oceanXButton.png" alt="Delete" /></button>' +
+			'<button type="button" class="editContactButton" onclick="editContact(' + contact.id + ', \'' + contact.firstName + '\', \'' + contact.lastName + '\', \'' + contact.phone + '\', \'' + contact.email + '\');"><img src="images/managerButtons/oceanEditButton.png" alt="Edit" /></button>' +
+			'</div></div>';
+	}
+
+	// Pagination buttons
+	if (totalPages > 1)
+	{
+		html += '<div class="pagination-buttons">';
+		html += '<button class="page-btn" onclick="changePage(' + (currentPage - 1) + ')" ' + (currentPage === 1 ? 'disabled' : '') + '>&#8592; Prev</button>';
+		for (let p = 1; p <= totalPages; p++)
+		{
+			html += '<button class="page-btn' + (p === currentPage ? ' page-btn-active' : '') + '" onclick="changePage(' + p + ')">' + p + '</button>';
+		}
+		html += '<button class="page-btn" onclick="changePage(' + (currentPage + 1) + ')" ' + (currentPage === totalPages ? 'disabled' : '') + '>Next &#8594;</button>';
+		html += '</div>';
+	}
+
+	html += '</div>';
+	document.getElementById("contactList").innerHTML = html;
+}
+
+function changePage(page)
+{
+	const totalPages = Math.ceil(allContacts.length / pageSize);
+	if (page < 1 || page > totalPages) return;
+	currentPage = page;
+	renderContactTable();
+}
+
+function changePageSize(size)
+{
+	pageSize = parseInt(size);
+	currentPage = 1;
+	renderContactTable();
+}
+
+function searchContact(statusOverride)
 {	
 	document.getElementById("addContactDiv").style.display = "none";
+	document.getElementById("contactList").style.display = "block";
 
 	let srch = document.getElementById("searchText").value;
-	document.getElementById("contactSearchResult").innerHTML = "";
-	
-	let contactList = "";
 
 	let tmp = {search:srch,userId:userId};
 	let jsonPayload = JSON.stringify( tmp );
@@ -316,34 +452,33 @@ function searchContact()
 		{
 			if (this.readyState == 4 && this.status == 200) 
 			{
-				document.getElementById("contactSearchResult").innerHTML = "Contact(s) has been retrieved";
 				let jsonObject = JSON.parse( xhr.responseText );
-				
-				contactList = '<div class="contact-table"><div class="contact-header"><div class="contact-cell">first name</div><div class="contact-cell">last name</div><div class="contact-cell">phone number</div><div class="contact-cell">email</div><div class="contact-actions">contact actions</div></div>';
-				
-				for( let i=0; i<jsonObject.results.length; i++ )
+
+				if (jsonObject.error && jsonObject.error.length > 0)
 				{
-					let contact = jsonObject.results[i];
-					contactList += '<div class="contact-row">' +
-						'<div class="contact-cell">' + contact.firstName + '</div>' +
-						'<div class="contact-cell">' + contact.lastName + '</div>' +
-						'<div class="contact-cell">' + contact.phone + '</div>' +
-						'<div class="contact-cell">' + contact.email + '</div>' +
-						'<div class="contact-actions">' +
-						'<button type="button" class="deleteContactButton" onclick="deleteContact(' + contact.id + ');"><img src="images/managerButtons/oceanXButton.png" alt="Delete" /></button>' +
-						'<button type="button" class="editContactButton" onclick="editContact(' + contact.id + ', \'' + contact.firstName + '\', \'' + contact.lastName + '\', \'' + contact.phone + '\', \'' + contact.email + '\');"><img src="images/managerButtons/oceanEditButton.png" alt="Edit" /></button>' +
-						'</div></div>';
+					allContacts = [];
+					document.getElementById("contactList").innerHTML = "";
+					return;
 				}
-				
-				contactList += '</div>';
-				document.getElementById("contactList").innerHTML = contactList;
+
+				if (statusOverride)
+				{
+					showStatus(statusOverride);
+				}
+				else
+				{
+					showStatus("Contact(s) has been retrieved");
+				}
+
+				allContacts = jsonObject.results;
+				currentPage = 1;
+				renderContactTable();
 			}
 		};
 		xhr.send(jsonPayload);
 	}
 	catch(err)
 	{
-		document.getElementById("contactSearchResult").innerHTML = err.message;
+		showStatus(err.message);
 	}
-	
 }
