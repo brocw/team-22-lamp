@@ -2,6 +2,7 @@
 html,
 body {
     height: 100%;
+    min-height: 100vh;
     margin: 0;
     font-family: 'Ubuntu', sans-serif;
     position: relative;
@@ -10,6 +11,7 @@ body {
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
+    background-attachment: fixed;
 }
 
 /* landing page */
@@ -101,10 +103,18 @@ body.login .logo {
 /* color page title */
 #title {
     text-align: center;
-    margin-top: 80px;
-    font-size: 48px;
-    font-weight: bold;
-    color: #073047;
+    margin-top: 40px;
+    font-size: 64px;
+    font-weight: 900;
+    color: #7f7daf;
+    -webkit-text-stroke: 3px #003f58;
+    paint-order: stroke fill;
+    letter-spacing: 2px;
+    text-shadow:
+        4px 4px 0px #003f58,
+        -1px -1px 0px #003f58,
+        1px -1px 0px #003f58,
+        -1px 1px 0px #003f58;
 }
 
 
@@ -293,15 +303,16 @@ body.login .logo {
     filter: brightness(0.7);
 }
 
-/* Stable placeholder fade */
+/* Placeholder roll out to the right */
 #searchText::placeholder {
     color: #073047;
-    opacity: 0;
-    transition: opacity 0.5s ease;
+    opacity: 1;
+    clip-path: inset(0 100% 0 0);
+    transition: clip-path 0.6s ease;
 }
 
 #searchText:hover::placeholder {
-    opacity: 1;
+    clip-path: inset(0 0% 0 0);
 }
 
 #logoutButton {
@@ -341,7 +352,7 @@ body.login .logo {
     border-radius: 8px;
     border: 2px solid #000;
     margin-bottom: 10px;
-    background-color: #fff;
+    background-color: rgba(255, 255, 255, 0.85);
     min-height: 60px;
     align-items: center;
 }
@@ -366,4 +377,94 @@ body.login .logo {
     justify-content: center;
     align-items: center;
     padding: 10px;
+}
+
+/* Pagination */
+.pagination-controls {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 12px;
+    font-size: 16px;
+    color: #073047;
+}
+
+#pageSizeSelect {
+    padding: 6px 10px;
+    font-size: 16px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    background: white;
+    cursor: pointer;
+    color: #073047;
+}
+
+.pagination-info {
+    font-size: 15px;
+    color: #073047;
+}
+
+.pagination-buttons {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 6px;
+    margin-top: 16px;
+    flex-wrap: wrap;
+}
+
+.page-btn {
+    padding: 8px 14px;
+    font-size: 15px;
+    border-radius: 8px;
+    border: 1px solid #0b4f6c;
+    background: white;
+    color: #0b4f6c;
+    cursor: pointer;
+}
+
+.page-btn:hover:not(:disabled) {
+    background-color: #0b4f6c;
+    color: white;
+}
+
+.page-btn:disabled {
+    opacity: 0.4;
+    cursor: default;
+}
+
+.page-btn-active {
+    background-color: #0b4f6c;
+    color: white;
+}
+
+/* Field error messages */
+.fieldError {
+    color: #cc0000;
+    font-size: 15px;
+    margin-top: 4px;
+    margin-left: 4px;
+    min-height: 20px;
+}
+
+/* Status Toast */
+#statusToast {
+    position: fixed;
+    top: 40px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(7, 48, 71, 0.88);
+    color: white;
+    padding: 14px 32px;
+    border-radius: 12px;
+    font-size: 20px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.4s ease;
+    z-index: 9999;
+    white-space: nowrap;
+}
+
+#statusToast.visible {
+    opacity: 1;
 }
