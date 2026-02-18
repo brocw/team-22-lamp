@@ -9,6 +9,7 @@
 	document.addEventListener('DOMContentLoaded', function() 
 	{
 		readCookie();
+		searchContact();
 	}, false);
 	</script>
 	
@@ -33,19 +34,26 @@
 		<div id="addContactTitle">NEW CONTACT</div>
 		<div><label for="addContactFirstName">First Name:</label><input id="addContactFirstName" type="text"></div>
 		<div><label for="addContactLastName">Last Name:</label><input id="addContactLastName" type="text"></div>
-		<div><label for="addContactPhone">Phone #:</label><input id="addContactPhone" type="text"></div>
-		<div><label for="addContactEmail">Email:</label><input id="addContactEmail" type="text"></div>
-		<span id="contactAddResult"></span><br />
+		<div>
+			<label for="addContactPhone">Phone #:</label>
+			<input id="addContactPhone" type="text">
+			<div class="fieldError" id="phoneError"></div>
+		</div>
+		<div>
+			<label for="addContactEmail">Email:</label>
+			<input id="addContactEmail" type="text">
+			<div class="fieldError" id="emailError"></div>
+		</div>
+		<br />
 		<button type="button" id="commitContactButton" class="buttons" onclick="addContact();"> Add Contact </button>
 	</div>
 
-	<span id="contactSearchResult"></span>
-	<span id="contactDeleteResult"></span>
-	<span id="contactEditResult"></span>
 	<p id="contactList">
 	</p><br /><br />
 
 </div>
+
+<div id="statusToast"></div>
 
 </body>
 </html>
