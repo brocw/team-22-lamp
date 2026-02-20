@@ -1,6 +1,8 @@
 const urlBase = 'http://cop-4331-22.com/LAMPAPI';
 const extension = 'php';
 
+
+
 let userId = 0;
 let firstName = "";
 let lastName = "";
@@ -196,13 +198,9 @@ function addContact()
 
     clearFieldErrors();
 
-    // Only validate format on add, not edit
-    if (editingId === null)
+    if (!validateContactFields(phoneNumber, email))
     {
-        if (!validateContactFields(phoneNumber, email))
-        {
-            return;
-        }
+        return;
     }
 
     let tmp;
@@ -290,6 +288,8 @@ function addContact()
 
 function deleteContact(contactId)
 {
+	if (!confirm("Are you sure you want to delete this contact?")) return;
+
 	let tmp = {id: contactId, userId:userId};
 	let jsonPayload = JSON.stringify( tmp );
 
@@ -357,9 +357,29 @@ function toggleAddContactDiv()
 
 
 
-let allContacts = [];
+function cancelContactForm()
+{
+    editingId = null;
+    clearFieldErrors();
+    document.getElementById("addContactDiv").style.display = "none";
+    document.getElementById("contactList").style.display = "block";
+}
+
+
+
 let currentPage = 1;
 let pageSize = 10;
+
+function toggleCard(id)
+{
+	const body = document.getElementById('card-body-' + id);
+	const arrow = document.getElementById('card-arrow-' + id);
+	const card = document.getElementById('card-' + id);
+	if (!body) return;
+	const isOpen = body.classList.toggle('card-body-open');
+	card.classList.toggle('card-open', isOpen);
+	if (arrow) arrow.style.transform = isOpen ? 'rotate(180deg)' : 'rotate(0deg)';
+}
 
 function renderContactTable()
 {
@@ -381,23 +401,51 @@ function renderContactTable()
 	html += '<span class="pagination-info"> Showing ' + (start + 1) + '&ndash;' + Math.min(end, allContacts.length) + ' of ' + allContacts.length + ' contacts</span>';
 	html += '</div>';
 
-	// Table header
-	html += '<div class="contact-header"><div class="contact-cell">first name</div><div class="contact-cell">last name</div><div class="contact-cell">phone number</div><div class="contact-cell">email</div><div class="contact-actions">contact actions</div></div>';
-
-	// Rows
+	// Cards grid
+	html += '<div class="contact-cards-grid">';
 	for (let i = 0; i < pageContacts.length; i++)
 	{
 		let contact = pageContacts[i];
-		html += '<div class="contact-row">' +
-			'<div class="contact-cell">' + contact.firstName + '</div>' +
-			'<div class="contact-cell">' + contact.lastName + '</div>' +
-			'<div class="contact-cell">' + contact.phone + '</div>' +
-			'<div class="contact-cell">' + contact.email + '</div>' +
-			'<div class="contact-actions">' +
-			'<button type="button" class="deleteContactButton" onclick="deleteContact(' + contact.id + ');"><img src="images/managerButtons/oceanXButton.png" alt="Delete" /></button>' +
-			'<button type="button" class="editContactButton" onclick="editContact(' + contact.id + ', \'' + contact.firstName + '\', \'' + contact.lastName + '\', \'' + contact.phone + '\', \'' + contact.email + '\');"><img src="images/managerButtons/oceanEditButton.png" alt="Edit" /></button>' +
-			'</div></div>';
+		// Build safe inline-edit args (escape single quotes)
+		let safeFirst = contact.firstName.replace(/'/g, "\\'");
+		let safeLast  = contact.lastName.replace(/'/g, "\\'");
+		let safePhone = contact.phone.replace(/'/g, "\\'");
+		let safeEmail = contact.email.replace(/'/g, "\\'");
+
+		// Initials for avatar
+		let initials = (contact.firstName.charAt(0) + contact.lastName.charAt(0)).toUpperCase();
+
+		html += '<div class="contact-card" id="card-' + contact.id + '">' +
+
+			// Card header (always visible, click to open)
+			'<div class="card-header" onclick="toggleCard(' + contact.id + ')">' +
+				'<div class="card-avatar">' + initials + '</div>' +
+				'<div class="card-header-name">' +
+					'<span class="card-full-name">' + contact.firstName + ' ' + contact.lastName + '</span>' +
+					'<span class="card-preview-email">' + contact.email + '</span>' +
+				'</div>' +
+				'<span class="card-arrow" id="card-arrow-' + contact.id + '">&#9660;</span>' +
+			'</div>' +
+
+			// Card body (expanded details)
+			'<div class="card-body" id="card-body-' + contact.id + '">' +
+				'<div class="card-detail-row">' +
+					'<span class="card-detail-label">&#128222; Phone</span>' +
+					'<span class="card-detail-value">' + contact.phone + '</span>' +
+				'</div>' +
+				'<div class="card-detail-row">' +
+					'<span class="card-detail-label">&#9993; Email</span>' +
+					'<span class="card-detail-value">' + contact.email + '</span>' +
+				'</div>' +
+				'<div class="card-actions">' +
+					'<button type="button" class="card-action-btn card-edit-btn" onclick="editContact(' + contact.id + ', \'' + safeFirst + '\', \'' + safeLast + '\', \'' + safePhone + '\', \'' + safeEmail + '\')">&#9998; Edit</button>' +
+					'<button type="button" class="card-action-btn card-delete-btn" onclick="deleteContact(' + contact.id + ')">&#10005; Delete</button>' +
+				'</div>' +
+			'</div>' +
+
+		'</div>';
 	}
+	html += '</div>'; // end contact-cards-grid
 
 	// Pagination buttons
 	if (totalPages > 1)
