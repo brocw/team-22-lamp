@@ -415,7 +415,7 @@ body.login .logo {
 .contact-card {
     border-radius: 16px;
     overflow: hidden;
-    background: rgba(255, 255, 255, 0.22);
+    background: rgba(255, 255, 255, 0.7);
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
     border: 1.5px solid rgba(255, 255, 255, 0.45);
