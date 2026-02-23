@@ -1,5 +1,7 @@
-<html>
+<html lang="en">
 <head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>Contact Manager</title>
 	<script type="text/javascript" src="js/code.js"></script>
     <link href="css/styles.css" rel="stylesheet">	
@@ -26,35 +28,36 @@
 <div id="accessUIDiv">
 	<br />
 
-	<input type="text" id="searchText" placeholder="Search by: First Name, Last Name, Email, or Phone Number."/>
-	<button type="button" id="searchContactButton" onclick="searchContact();"><img src="images/managerButtons/oceanSearchButton.png" alt="Search Contact" /></button>
+	<label for="searchText" class="sr-only">Search Contacts</label>
+	<input type="text" id="searchText" placeholder="Search by: First Name, Last Name, Email, or Phone Number." aria-label="Search contacts by first name, last name, email, or phone number"/>
+	<button type="button" id="searchContactButton" aria-label="Search Contact" onclick="searchContact();"><img src="images/managerButtons/oceanSearchButton.png" alt="" /></button>
 
-	<button type="button" id="addContactButton" onclick="toggleAddContactDiv();"><img src="images/managerButtons/oceanAddButton.png" alt="Add Contact" /></button>
+	<button type="button" id="addContactButton" aria-label="Add Contact" onclick="toggleAddContactDiv();"><img src="images/managerButtons/oceanAddButton.png" alt="" /></button>
 	<div id="addContactDiv">
-		<div id="addContactTitle">NEW CONTACT</div>
+		<div id="addContactTitle" role="heading" aria-level="2">NEW CONTACT</div>
 		<div><label for="addContactFirstName">First Name:</label><input id="addContactFirstName" type="text"></div>
 		<div><label for="addContactLastName">Last Name:</label><input id="addContactLastName" type="text"></div>
 		<div>
 			<label for="addContactPhone">Phone #:</label>
-			<input id="addContactPhone" type="text">
-			<div class="fieldError" id="phoneError"></div>
+			<input id="addContactPhone" type="tel" aria-describedby="phoneError">
+			<div class="fieldError" id="phoneError" role="alert"></div>
 		</div>
 		<div>
 			<label for="addContactEmail">Email:</label>
-			<input id="addContactEmail" type="text">
-			<div class="fieldError" id="emailError"></div>
+			<input id="addContactEmail" type="email" aria-describedby="emailError">
+			<div class="fieldError" id="emailError" role="alert"></div>
 		</div>
 		<br />
 		<button type="button" id="commitContactButton" class="buttons" onclick="addContact();"> Add Contact </button>
 		<button type="button" id="backButton" onclick="cancelContactForm();"> Back </button>
 	</div>
 
-	<p id="contactList">
+	<p id="contactList" aria-live="polite">
 	</p><br /><br />
 
 </div>
 
-<div id="statusToast"></div>
+<div id="statusToast" role="status" aria-live="polite"></div>
 
 </body>
 </html>
